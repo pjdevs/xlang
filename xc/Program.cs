@@ -371,6 +371,8 @@ namespace xc
             {
                 if (b.OperatorToken.Kind == SyntaxKind.PlusToken)
                     return EvaluateExpression(b.Left) + EvaluateExpression(b.Right);
+                else if (b.OperatorToken.Kind == SyntaxKind.MinusToken)
+                    return EvaluateExpression(b.Left) - EvaluateExpression(b.Right);
                 else return -1;
             }
             else return -1;
