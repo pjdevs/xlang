@@ -17,28 +17,17 @@ namespace xc
                     return;
 
                 var parser = new Parser(line);
-                var expression = parser.Parse();
+                var tree = parser.Parse();
+                var evaluator = new Evaluator(tree.Root);
 
-                PrettyPrint(expression.Root);
+                PrettyPrint(tree.Root);
 
-                foreach (var diagnostic in parser.Diagnostics)
+                if (parser.Diagnostics.Any())
                 {
-                    ErrorPrint(diagnostic);
+                    foreach (var diagnostic in parser.Diagnostics)
+                        ErrorPrint(diagnostic);
                 }
-
-                // Lexer lexer = new Lexer(line);
-                // while (true)
-                // {
-                //     SyntaxToken token = lexer.NextToken();
-
-                //     if (token.Kind == SyntaxKind.EndOfFileToken)
-                //         break;
-
-                //     Console.Write($"{token.Kind}: '{token.Text}'");
-                //     if (token.Value != null)
-                //         Console.WriteLine($" {token.Value}");
-                //     else Console.WriteLine();
-                // }
+                else Console.WriteLine(evaluator.Evaluate());
             }
         }
 
@@ -378,8 +367,13 @@ namespace xc
             {
                 return (int)n.NumberToken.Value;
             }
-
-            return 0;
+            else if (root is BinaryExpressionSyntax b)
+            {
+                if (b.OperatorToken.Kind == SyntaxKind.PlusToken)
+                    return EvaluateExpression(b.Left) + EvaluateExpression(b.Right);
+                else return -1;
+            }
+            else return -1;
         }
 
         public int Evaluate()
