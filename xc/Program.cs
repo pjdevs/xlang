@@ -12,8 +12,8 @@ namespace xc
             {
                 Console.Write("> ");
 
-                string line = Console.ReadLine();
-                if (String.IsNullOrWhiteSpace(line))
+                var line = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(line))
                     return;
 
                 var parser = new Parser(line);
