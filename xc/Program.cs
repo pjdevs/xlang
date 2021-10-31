@@ -352,7 +352,7 @@ namespace xc
         }
     }
 
-    class Evaluator
+    sealed class Evaluator
     {
         private ExpressionSyntax _root;
 
