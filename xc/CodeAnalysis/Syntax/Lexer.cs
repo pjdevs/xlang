@@ -37,13 +37,13 @@ namespace Xlang.CodeAnalysis.Syntax
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, "\0", null);
             else if (char.IsDigit(Current))
             {
-                int start = _position;
+                var start = _position;
 
                 while (char.IsDigit(Current))
                     Next();
 
-                int length = _position - start;
-                string text = _text.Substring(start, length);
+                var length = _position - start;
+                var text = _text.Substring(start, length);
                 if (!int.TryParse(text, out int value))
                 {
                     _diagnostics.Add($"ERROR::Lexer: Number {_text} is not a valid Int32");
@@ -53,36 +53,48 @@ namespace Xlang.CodeAnalysis.Syntax
             }
             else if (char.IsWhiteSpace(Current))
             {
-                int start = _position;
+                var start = _position;
 
                 while (char.IsWhiteSpace(Current))
                     Next();
 
-                int length = _position - start;
-                string text = _text.Substring(start, length);
+                var length = _position - start;
+                var text = _text.Substring(start, length);
 
                 return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
             }
-
-
-            switch (Current)
+            else if (char.IsLetter(Current))
             {
-                case '+':
-                    return new SyntaxToken(SyntaxKind.PlusToken, Next(), "+", null);
-                case '-':
-                    return new SyntaxToken(SyntaxKind.MinusToken, Next(), "-", null);
-                case '*':
-                    return new SyntaxToken(SyntaxKind.StarToken, Next(), "*", null);
-                case '/':
-                    return new SyntaxToken(SyntaxKind.SlashToken, Next(), "/", null);
-                case '(':
-                    return new SyntaxToken(SyntaxKind.OpenParenthesisToken, Next(), "(", null);
-                case ')':
-                    return new SyntaxToken(SyntaxKind.CloseParenthesisToken, Next(), ")", null);
-                default:
-                    _diagnostics.Add($"ERROR::Lexer: Unrecognized token '{Current}'");
-                    return new SyntaxToken(SyntaxKind.BadToken, Next(), _text.Substring(_position - 1, 1), null);
+                var start = _position;
+
+                while (char.IsLetter(Current))
+                    Next();
+
+                var length = _position - start;
+                var text = _text.Substring(start, length);
+                var kind = SyntaxFacts.GetKeywordKind(text);
+
+                return new SyntaxToken(kind, start, text, null);
             }
+
+            SyntaxToken makeToken(SyntaxKind kind, string text)
+            {
+                if (kind == SyntaxKind.BadToken)
+                    _diagnostics.Add($"ERROR::Lexer: Unrecognized token '{Current}'");
+                    
+                return new SyntaxToken(kind, Next(), text, null);
+            }
+
+            return Current switch
+            {
+                '+' => makeToken(SyntaxKind.PlusToken, "+"),
+                '-' => makeToken(SyntaxKind.PlusToken, "*"),
+                '*' => makeToken(SyntaxKind.PlusToken, "*"),
+                '/' => makeToken(SyntaxKind.PlusToken, "/"),
+                '(' => makeToken(SyntaxKind.PlusToken, "("),
+                ')' => makeToken(SyntaxKind.PlusToken, ")"),
+                _   => makeToken(SyntaxKind.BadToken, _text.Substring(_position - 1, 1))
+            };
         }
     }
 }

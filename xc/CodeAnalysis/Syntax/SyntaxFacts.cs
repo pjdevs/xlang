@@ -1,3 +1,5 @@
+using System;
+
 namespace Xlang.CodeAnalysis.Syntax
 {
     internal static class SyntaxFacts
@@ -29,6 +31,16 @@ namespace Xlang.CodeAnalysis.Syntax
                 default:
                     return 0;
             }
-        }  
+        }
+
+        internal static SyntaxKind GetKeywordKind(string text)
+        {
+            return text switch
+            {
+                "true"  => SyntaxKind.TrueToken,
+                "false" => SyntaxKind.FalseToken,
+                _       => SyntaxKind.IdentifierToken 
+            };
+        }
     }
 }

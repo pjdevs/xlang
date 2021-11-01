@@ -18,6 +18,9 @@ namespace Xlang.CodeAnalysis.Syntax
         LiteralExpression,
         UnaryExpression,
         BinaryExpression,
-        ParenthesizedExpression
+        ParenthesizedExpression,
+        IdentifierToken,
+        TrueToken,
+        FalseToken
     }
 }

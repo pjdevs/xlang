@@ -13,15 +13,15 @@ namespace Xlang.CodeAnalysis
             _root = root;
         }
 
-        private int EvaluateExpression(BoundExpression node)
+        private object EvaluateExpression(BoundExpression node)
         {
             switch (node)
             {
                 case BoundLiteralExpression l:
-                    return (int)l.Value;
+                    return l.Value;
                 case BoundUnaryExpression u:
                     {
-                        var operand = EvaluateExpression(u.Operand);
+                        var operand = (int)EvaluateExpression(u.Operand);
 
                         return u.OperatorKind switch
                         {
@@ -33,8 +33,8 @@ namespace Xlang.CodeAnalysis
 
                 case BoundBinaryExpression b:
                     {
-                        var left = EvaluateExpression(b.Left);
-                        var right = EvaluateExpression(b.Right);
+                        var left = (int)EvaluateExpression(b.Left);
+                        var right = (int)EvaluateExpression(b.Right);
 
                         return b.OperatorKind switch
                         {
@@ -51,7 +51,7 @@ namespace Xlang.CodeAnalysis
             }
         }
 
-        public int Evaluate()
+        public object Evaluate()
         {
             return EvaluateExpression(_root);
         }
