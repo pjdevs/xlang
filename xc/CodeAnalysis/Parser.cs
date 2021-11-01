@@ -2,6 +2,25 @@ using System.Collections.Generic;
 
 namespace Xlang.CodeAnalysis
 {
+    internal static class SyntaxFacts
+    {
+        public static int GetBinaryOperatorPrecedence(this SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
+                    return 1;
+                case SyntaxKind.StarToken:
+                case SyntaxKind.SlashToken:
+                    return 2;
+
+                default:
+                    return 0;
+            }
+        } 
+    }
+
     internal sealed class Parser
     {
         private readonly SyntaxToken[] _tokens;
@@ -76,7 +95,7 @@ namespace Xlang.CodeAnalysis
             
             while (true)
             {
-                var precedence = GetBinaryOperatorPrecedence(Current.Kind);
+                var precedence = Current.Kind.GetBinaryOperatorPrecedence();
                 if (precedence == 0 || precedence <= parentPrecedence)
                     break;
 
@@ -86,22 +105,6 @@ namespace Xlang.CodeAnalysis
             }
 
             return left;
-        }
-
-        private static int GetBinaryOperatorPrecedence(SyntaxKind kind)
-        {
-            switch (kind)
-            {
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 1;
-                case SyntaxKind.StarToken:
-                case SyntaxKind.SlashToken:
-                    return 2;
-
-                default:
-                    return 0;
-            }
         }
 
         public ExpressionSyntax ParsePrimaryExpression()
