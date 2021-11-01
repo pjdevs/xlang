@@ -1,6 +1,6 @@
 using System;
 
-namespace xc.CodeAnalysis
+namespace Xlang.CodeAnalysis
 {
     public sealed class Evaluator
     {

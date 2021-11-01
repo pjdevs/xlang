@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace xc.CodeAnalysis
+namespace Xlang.CodeAnalysis
 {
     internal sealed class Parser
     {

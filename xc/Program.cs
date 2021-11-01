@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using xc.CodeAnalysis;
+using Xlang.CodeAnalysis;
 
-namespace xc
+namespace Xlang
 {
     class Program
     {

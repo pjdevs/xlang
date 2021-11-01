@@ -1,4 +1,4 @@
-namespace xc.CodeAnalysis
+namespace Xlang.CodeAnalysis
 {
     public enum SyntaxKind
     {
