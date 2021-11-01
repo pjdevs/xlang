@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace xc.CodeAnalysis
 {
-    sealed class SyntaxTree
+    public sealed class SyntaxTree
     {
         private IEnumerable<string> _diagnostics;
 

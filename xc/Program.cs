@@ -8,7 +8,7 @@ namespace xc
     {
         static void Main(string[] args)
         {
-            bool showTree = false;
+            var showTree = false;
 
             while (true)
             {
@@ -51,17 +51,13 @@ namespace xc
 
         static void ErrorPrint(string msg)
         {
-            var color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
-
             Console.WriteLine(msg);
-
-            Console.ForegroundColor = color;
+            Console.ResetColor();
         }
 
         static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
         {
-            var color = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.DarkGray;
 
             var marker = isLast ? "└──" : "├──";
@@ -78,14 +74,15 @@ namespace xc
 
             Console.WriteLine();
 
-            indent += isLast ? "    " : "│   " ;
+            indent += isLast ? "   " : "│  " ;
 
             var lastChild = node.GetChildren().LastOrDefault();
 
             foreach (var child in node.GetChildren())
                 PrettyPrint(child, indent, child == lastChild);
 
-            Console.ForegroundColor = color;
+            Console.ResetColor();
         }
     }
 }
+ 

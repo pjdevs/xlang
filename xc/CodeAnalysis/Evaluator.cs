@@ -2,7 +2,7 @@ using System;
 
 namespace xc.CodeAnalysis
 {
-    sealed class Evaluator
+    public sealed class Evaluator
     {
         private ExpressionSyntax _root;
 
@@ -13,8 +13,8 @@ namespace xc.CodeAnalysis
 
         public int EvaluateExpression(ExpressionSyntax root)
         {
-            if (root is NumberExpressionSyntax n)
-                return (int)n.NumberToken.Value;
+            if (root is LiteralExpressionSyntax n)
+                return (int)n.LiteralToken.Value;
             else if (root is BinaryExpressionSyntax b)
             {
                 var left = EvaluateExpression(b.Left);

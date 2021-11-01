@@ -1,7 +1,8 @@
 namespace xc.CodeAnalysis
 {
-    enum SyntaxKind
+    public enum SyntaxKind
     {
+        // Tokens
         NumberToken,
         WhitespaceToken,
         PlusToken,
@@ -12,6 +13,8 @@ namespace xc.CodeAnalysis
         CloseParenthesisToken,
         EndOfFileToken,
         BadToken,
+
+        // Expressions
         NumberExpression,
         BinaryExpression,
         ParenthesizedExpression
