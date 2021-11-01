@@ -15,7 +15,7 @@ namespace xc.CodeAnalysis
         BadToken,
 
         // Expressions
-        NumberExpression,
+        LiteralExpression,
         BinaryExpression,
         ParenthesizedExpression
     }
