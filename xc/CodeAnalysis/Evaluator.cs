@@ -15,6 +15,16 @@ namespace Xlang.CodeAnalysis
         {
             if (root is LiteralExpressionSyntax n)
                 return (int)n.LiteralToken.Value;
+            else if (root is UnaryExpressionSyntax u)
+            {
+                var operand = EvaluateExpression(u.Operand);
+
+                if (u.OperatorToken.Kind == SyntaxKind.PlusToken)
+                    return operand;
+                else if (u.OperatorToken.Kind == SyntaxKind.MinusToken)
+                    return -operand;
+                else throw new Exception($"Unexpected unary operator kind {u.OperatorToken.Kind}");
+            }
             else if (root is BinaryExpressionSyntax b)
             {
                 var left = EvaluateExpression(b.Left);
