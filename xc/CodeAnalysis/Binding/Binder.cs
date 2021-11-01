@@ -12,17 +12,13 @@ namespace Xlang.CodeAnalysis.Binding
 
         public BoundExpression BindExpression(ExpressionSyntax syntax)
         {
-            switch (syntax.Kind)
+            return syntax.Kind switch
             {
-                case SyntaxKind.LiteralExpression:
-                    return BindLiteralExpression((LiteralExpressionSyntax)syntax);
-                case SyntaxKind.UnaryExpression:
-                    return BindUnaryExpression((UnaryExpressionSyntax)syntax);
-                case SyntaxKind.BinaryExpression:
-                    return BindBinaryExpression((BinaryExpressionSyntax)syntax);
-                default:
-                    throw new Exception($"Unexpected syntax {syntax.Kind}");
-            }
+                SyntaxKind.LiteralExpression => BindLiteralExpression((LiteralExpressionSyntax)syntax),
+                SyntaxKind.UnaryExpression   => BindUnaryExpression((UnaryExpressionSyntax)syntax),
+                SyntaxKind.BinaryExpression  => BindBinaryExpression((BinaryExpressionSyntax)syntax),
+                _                            => throw new Exception($"Unexpected syntax {syntax.Kind}")
+            };
         }
 
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
@@ -63,15 +59,12 @@ namespace Xlang.CodeAnalysis.Binding
             if (operandType != typeof(int))
                 return null;
 
-            switch (kind)
+            return kind switch
             {
-                case SyntaxKind.PlusToken:
-                    return BoundUnaryOperatorKind.Identity;
-                case SyntaxKind.MinusToken:
-                    return BoundUnaryOperatorKind.Negation;
-                default:
-                    throw new Exception($"Unexpected unary operator {kind}");
-            }
+                SyntaxKind.PlusToken  => BoundUnaryOperatorKind.Identity,
+                SyntaxKind.MinusToken => BoundUnaryOperatorKind.Negation,
+                _                     => throw new Exception($"Unexpected unary operator {kind}")
+            };
         }
 
         private BoundBinaryOperatorKind? BindBinaryOperatorKind(SyntaxKind kind, Type leftType, Type rightType)
@@ -79,20 +72,14 @@ namespace Xlang.CodeAnalysis.Binding
             if (leftType != typeof(int) || rightType != typeof(int))
                 return null;
 
-            switch (kind)
+            return kind switch
             {
-                case SyntaxKind.PlusToken:
-                    return BoundBinaryOperatorKind.Addition;
-                case SyntaxKind.MinusToken:
-                    return BoundBinaryOperatorKind.Substraction;
-                case SyntaxKind.StarToken:
-                    return BoundBinaryOperatorKind.Multiplication;
-                case SyntaxKind.SlashToken:
-                    return BoundBinaryOperatorKind.Division;
-
-                default:
-                    throw new Exception($"Unexpected binary operator {kind}");
-            }
+                SyntaxKind.PlusToken  => BoundBinaryOperatorKind.Addition,
+                SyntaxKind.MinusToken => BoundBinaryOperatorKind.Substraction,
+                SyntaxKind.StarToken  => BoundBinaryOperatorKind.Multiplication,
+                SyntaxKind.SlashToken => BoundBinaryOperatorKind.Division,
+                _                     => throw new Exception($"Unexpected binary operator {kind}")
+            };
         }
     }
 }

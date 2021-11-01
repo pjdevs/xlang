@@ -113,7 +113,7 @@ namespace Xlang.CodeAnalysis.Syntax
                 case SyntaxKind.FalseToken:
                 {
                     var keywordToken = NextToken();
-                    var value = Current.Kind == SyntaxKind.TrueToken;
+                    var value = keywordToken.Kind == SyntaxKind.TrueToken;
                     return new LiteralExpressionSyntax(keywordToken, value);
                 }
 
