@@ -88,7 +88,7 @@ namespace Xlang.CodeAnalysis.Syntax
             return Current switch
             {
                 '+' => makeToken(SyntaxKind.PlusToken, "+"),
-                '-' => makeToken(SyntaxKind.PlusToken, "*"),
+                '-' => makeToken(SyntaxKind.PlusToken, "-"),
                 '*' => makeToken(SyntaxKind.PlusToken, "*"),
                 '/' => makeToken(SyntaxKind.PlusToken, "/"),
                 '(' => makeToken(SyntaxKind.PlusToken, "("),
