@@ -17,17 +17,20 @@ namespace xc
                     return;
 
                 var parser = new Parser(line);
-                var tree = parser.Parse();
-                var evaluator = new Evaluator(tree.Root);
+                var syntaxTree = parser.Parse();
 
-                PrettyPrint(tree.Root);
+                PrettyPrint(syntaxTree.Root);
 
-                if (parser.Diagnostics.Any())
+                if (syntaxTree.Diagnostics.Any())
                 {
                     foreach (var diagnostic in parser.Diagnostics)
                         ErrorPrint(diagnostic);
                 }
-                else Console.WriteLine(evaluator.Evaluate());
+                else 
+                {
+                    var evaluator = new Evaluator(syntaxTree.Root);
+                    Console.WriteLine(evaluator.Evaluate());
+                }
             }
         }
 
@@ -156,7 +159,7 @@ namespace xc
                 string text = _text.Substring(start, length);
                 if (!int.TryParse(text, out int value))
                 {
-                    _diagnostics.Add($"ERROR: Number {_text} is not a valid int");
+                    _diagnostics.Add($"ERROR: Number {_text} is not a valid Int32");
                 }
 
                 return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
@@ -255,18 +258,20 @@ namespace xc
 
         public SyntaxTree Parse()
         {
-            var expression = ParsExpression();
+            var expression = ParseExpression();
             var endOfFileToken = Match(SyntaxKind.EndOfFileToken);
 
             return new SyntaxTree(_diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionSyntax ParsExpression()
+        private ExpressionSyntax ParseExpression()
         {
             var left = ParsePrimaryExpression();
 
             while (Current.Kind == SyntaxKind.PlusToken ||
-                   Current.Kind == SyntaxKind.MinusToken)
+                   Current.Kind == SyntaxKind.MinusToken ||
+                   Current.Kind == SyntaxKind.StarToken ||
+                   Current.Kind == SyntaxKind.SlashToken)
             {
                 var operatorToken = NextToken();
                 var right = ParsePrimaryExpression();
@@ -364,16 +369,21 @@ namespace xc
         public int EvaluateExpression(ExpressionSyntax root)
         {
             if (root is NumberExpressionSyntax n)
-            {
                 return (int)n.NumberToken.Value;
-            }
             else if (root is BinaryExpressionSyntax b)
             {
+                var left = EvaluateExpression(b.Left);
+                var right = EvaluateExpression(b.Right);
+
                 if (b.OperatorToken.Kind == SyntaxKind.PlusToken)
-                    return EvaluateExpression(b.Left) + EvaluateExpression(b.Right);
+                    return left + right;
                 else if (b.OperatorToken.Kind == SyntaxKind.MinusToken)
-                    return EvaluateExpression(b.Left) - EvaluateExpression(b.Right);
-                else return -1;
+                    return left - right;
+                else if (b.OperatorToken.Kind == SyntaxKind.StarToken)
+                    return left * right;
+                else if (b.OperatorToken.Kind == SyntaxKind.SlashToken)
+                    return left / right;
+                else throw new Exception($"ERROR: Unexpected binary operator {b.OperatorToken.Kind}");
             }
             else return -1;
         }
