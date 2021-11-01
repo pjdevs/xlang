@@ -31,12 +31,10 @@ namespace xc.CodeAnalysis
             return _position++;
         }
 
-        public SyntaxToken NextToken()
+        public SyntaxToken Lex()
         {
             if (_position >= _text.Length)
-            {
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _position, "\0", null);
-            }
             else if (char.IsDigit(Current))
             {
                 int start = _position;
@@ -65,22 +63,25 @@ namespace xc.CodeAnalysis
 
                 return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
             }
-            else if (Current == '+')
-                return new SyntaxToken(SyntaxKind.PlusToken, Next(), "+", null);
-            else if (Current == '-')
-                return new SyntaxToken(SyntaxKind.MinusToken, Next(), "-", null);
-            else if (Current == '*')
-                return new SyntaxToken(SyntaxKind.StarToken, Next(), "*", null);
-            else if (Current == '/')
-                return new SyntaxToken(SyntaxKind.SlashToken, Next(), "/", null);
-            else if (Current == '(')
-                return new SyntaxToken(SyntaxKind.OpenParenthesisToken, Next(), "(", null);
-            else if (Current == ')')
-                return new SyntaxToken(SyntaxKind.CloseParenthesisToken, Next(), ")", null);
-            else
+
+
+            switch (Current)
             {
-                _diagnostics.Add($"ERROR::Lexer: Unrecognized token '{Current}'");
-                return new SyntaxToken(SyntaxKind.BadToken, Next(), _text.Substring(_position - 1, 1), null);
+                case '+':
+                    return new SyntaxToken(SyntaxKind.PlusToken, Next(), "+", null);
+                case '-':
+                    return new SyntaxToken(SyntaxKind.MinusToken, Next(), "-", null);
+                case '*':
+                    return new SyntaxToken(SyntaxKind.StarToken, Next(), "*", null);
+                case '/':
+                    return new SyntaxToken(SyntaxKind.SlashToken, Next(), "/", null);
+                case '(':
+                    return new SyntaxToken(SyntaxKind.OpenParenthesisToken, Next(), "(", null);
+                case ')':
+                    return new SyntaxToken(SyntaxKind.CloseParenthesisToken, Next(), ")", null);
+                default:
+                    _diagnostics.Add($"ERROR::Lexer: Unrecognized token '{Current}'");
+                    return new SyntaxToken(SyntaxKind.BadToken, Next(), _text.Substring(_position - 1, 1), null);
             }
         }
     }
