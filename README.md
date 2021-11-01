@@ -1,5 +1,7 @@
 # Xlang
 
+[![Build Status](https://pjmrl.visualstudio.com/Xlang/_apis/build/status/pjdevs.xlang?branchName=master)](https://pjmrl.visualstudio.com/Xlang/_build/latest?definitionId=1&branchName=master)
+
 Making a compiler from scratch in C# to learn basics of compilation.
 
 ## Features
