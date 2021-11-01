@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Xlang.CodeAnalysis;
+using Xlang.CodeAnalysis.Syntax;
 
 namespace Xlang
 {
