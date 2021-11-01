@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Xlang.CodeAnalysis;
+using Xlang.CodeAnalysis.Binding;
 using Xlang.CodeAnalysis.Syntax;
 
 namespace Xlang
@@ -33,18 +34,21 @@ namespace Xlang
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
+                var binder = new Binder();
+                var boundExpression = binder.BindExpression(syntaxTree.Root);
+                var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics);
 
                 if (showTree)
                     PrettyPrint(syntaxTree.Root);
 
-                if (syntaxTree.Diagnostics.Any())
+                if (diagnostics.Any())
                 {
-                    foreach (var diagnostic in syntaxTree.Diagnostics)
+                    foreach (var diagnostic in diagnostics)
                         ErrorPrint(diagnostic);
                 }
                 else 
                 {
-                    var evaluator = new Evaluator(syntaxTree.Root);
+                    var evaluator = new Evaluator(boundExpression);
                     Console.WriteLine(evaluator.Evaluate());
                 }
             }
