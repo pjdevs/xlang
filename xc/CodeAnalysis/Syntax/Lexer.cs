@@ -16,14 +16,16 @@ namespace Xlang.CodeAnalysis.Syntax
             _diagnostics = new List<string>();
         }
 
-        private char Current
+        private char Current => Peek(0);
+        private char Lookahead => Peek(1);
+
+        private char Peek(int offset)
         {
-            get
-            {
-                if (_position >= _text.Length)
-                    return '\n';
-                else return _text[_position];
-            }
+            var index = _position + offset;
+
+            if (index >= _text.Length)
+                return '\0';
+            else return _text[index];
         }
 
         private int Next()
@@ -77,12 +79,14 @@ namespace Xlang.CodeAnalysis.Syntax
                 return new SyntaxToken(kind, start, text, null);
             }
 
-            SyntaxToken makeToken(SyntaxKind kind, string text)
+            SyntaxToken makeToken(SyntaxKind kind, string text = "", int offset = 1)
             {
                 if (kind == SyntaxKind.BadToken)
+                {
                     _diagnostics.Add($"ERROR::Lexer: Unrecognized token '{Current}'");
-                    
-                return new SyntaxToken(kind, Next(), text, null);
+                    return new SyntaxToken(SyntaxKind.BadToken, _position++, _text.Substring(_position - 1, 1), null);
+                }
+                else return new SyntaxToken(kind, _position += offset, text, null);
             }
 
             return Current switch
@@ -93,7 +97,10 @@ namespace Xlang.CodeAnalysis.Syntax
                 '/' => makeToken(SyntaxKind.PlusToken, "/"),
                 '(' => makeToken(SyntaxKind.PlusToken, "("),
                 ')' => makeToken(SyntaxKind.PlusToken, ")"),
-                _   => makeToken(SyntaxKind.BadToken, _text.Substring(_position - 1, 1))
+                '!' => makeToken(SyntaxKind.BangToken, "!"),
+                '&' => Lookahead == '&' ? makeToken(SyntaxKind.AmpersandAmpersandToken, "&&", 2) : makeToken(SyntaxKind.BadToken),
+                '|' => Lookahead == '|' ? makeToken(SyntaxKind.PipePipeToken, "||", 2) : makeToken(SyntaxKind.BadToken),
+                _   => makeToken(SyntaxKind.BadToken)
             };
         }
     }

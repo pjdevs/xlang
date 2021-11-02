@@ -11,6 +11,12 @@ namespace Xlang.CodeAnalysis.Syntax
         SlashToken,
         OpenParenthesisToken,
         CloseParenthesisToken,
+        IdentifierToken,
+        TrueToken,
+        FalseToken,
+        BangToken,
+        AmpersandAmpersandToken,
+        PipePipeToken,
         EndOfFileToken,
         BadToken,
 
@@ -19,8 +25,5 @@ namespace Xlang.CodeAnalysis.Syntax
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
-        IdentifierToken,
-        TrueToken,
-        FalseToken
     }
 }

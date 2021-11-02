@@ -5,6 +5,8 @@ namespace Xlang.CodeAnalysis.Binding
         Addition,
         Substraction,
         Multiplication,
-        Division
+        Division,
+        LogicalAnd,
+        LogicalOr
     }
 }

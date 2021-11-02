@@ -6,31 +6,27 @@ namespace Xlang.CodeAnalysis.Syntax
     {
         public static int GetUnaryOperatorPrecedence(this SyntaxKind kind)
         {
-            switch (kind)
+            return kind switch
             {
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 3;
-
-                default:
-                    return 0;
-            }
+                SyntaxKind.PlusToken or
+                SyntaxKind.MinusToken or
+                SyntaxKind.BangToken => 5,
+                _                    => 0
+            };
         }
 
         public static int GetBinaryOperatorPrecedence(this SyntaxKind kind)
         {
-            switch (kind)
+            return kind switch
             {
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 1;
-                case SyntaxKind.StarToken:
-                case SyntaxKind.SlashToken:
-                    return 2;
-
-                default:
-                    return 0;
-            }
+                SyntaxKind.StarToken or
+                SyntaxKind.SlashToken              => 4,
+                SyntaxKind.PlusToken or 
+                SyntaxKind.MinusToken              => 3,                                
+                SyntaxKind.AmpersandAmpersandToken => 2,
+                SyntaxKind.PipePipeToken           => 1,
+                _                                  => 0
+            };
         }
 
         internal static SyntaxKind GetKeywordKind(string text)

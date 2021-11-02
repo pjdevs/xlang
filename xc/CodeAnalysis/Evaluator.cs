@@ -1,5 +1,4 @@
 using System;
-using Xlang.CodeAnalysis.Syntax;
 using Xlang.CodeAnalysis.Binding;
 
 namespace Xlang.CodeAnalysis
@@ -21,28 +20,31 @@ namespace Xlang.CodeAnalysis
                     return l.Value;
                 case BoundUnaryExpression u:
                     {
-                        var operand = (int)EvaluateExpression(u.Operand);
+                        var operand = EvaluateExpression(u.Operand);
 
                         return u.OperatorKind switch
                         {
-                            BoundUnaryOperatorKind.Identity => operand,
-                            BoundUnaryOperatorKind.Negation => -operand,
-                            _ => throw new Exception($"Unexpected unary operator kind {u.OperatorKind}")
+                            BoundUnaryOperatorKind.Identity        => operand,
+                            BoundUnaryOperatorKind.Negation        => -(int)operand,
+                            BoundUnaryOperatorKind.LogicalNegation => !(bool)operand,
+                            _                                      => throw new Exception($"Unexpected unary operator kind {u.OperatorKind}")
                         };
                     }
 
                 case BoundBinaryExpression b:
                     {
-                        var left = (int)EvaluateExpression(b.Left);
-                        var right = (int)EvaluateExpression(b.Right);
+                        var left = EvaluateExpression(b.Left);
+                        var right = EvaluateExpression(b.Right);
 
                         return b.OperatorKind switch
                         {
-                            BoundBinaryOperatorKind.Addition => left + right,
-                            BoundBinaryOperatorKind.Substraction => left - right,
-                            BoundBinaryOperatorKind.Multiplication => left * right,
-                            BoundBinaryOperatorKind.Division => left / right,
-                            _ => throw new Exception($"Unexpected binary operator {b.OperatorKind}")
+                            BoundBinaryOperatorKind.Addition       => (int)left + (int)right,
+                            BoundBinaryOperatorKind.Substraction   => (int)left - (int)right,
+                            BoundBinaryOperatorKind.Multiplication => (int)left * (int)right,
+                            BoundBinaryOperatorKind.Division       => (int)left / (int)right,
+                            BoundBinaryOperatorKind.LogicalAnd     => (bool)left && (bool)right,
+                            BoundBinaryOperatorKind.LogicalOr      => (bool)left || (bool)right,
+                            _                                      => throw new Exception($"Unexpected binary operator {b.OperatorKind}")
                         };
                     }
 

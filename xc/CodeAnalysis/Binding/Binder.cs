@@ -56,30 +56,48 @@ namespace Xlang.CodeAnalysis.Binding
 
         private BoundUnaryOperatorKind? BindUnaryOperatorKind(SyntaxKind kind, Type operandType)
         {
-            if (operandType != typeof(int))
-                return null;
-
-            return kind switch
+            var operandTypeOk = kind switch
             {
-                SyntaxKind.PlusToken  => BoundUnaryOperatorKind.Identity,
-                SyntaxKind.MinusToken => BoundUnaryOperatorKind.Negation,
+                SyntaxKind.PlusToken  or
+                SyntaxKind.MinusToken => operandType == typeof(int),
+                SyntaxKind.BangToken  => operandType == typeof(bool),
                 _                     => throw new Exception($"Unexpected unary operator {kind}")
             };
+
+            if (operandTypeOk)
+                return kind switch
+                {
+                    SyntaxKind.PlusToken  => BoundUnaryOperatorKind.Identity,
+                    SyntaxKind.MinusToken => BoundUnaryOperatorKind.Negation,
+                    SyntaxKind.BangToken  => BoundUnaryOperatorKind.LogicalNegation,
+                    _                       => throw new Exception($"Unexpected unary operator {kind}")
+                };
+            else return null;
         }
 
         private BoundBinaryOperatorKind? BindBinaryOperatorKind(SyntaxKind kind, Type leftType, Type rightType)
         {
-            if (leftType != typeof(int) || rightType != typeof(int))
-                return null;
-
-            return kind switch
+            var operandTypeOk = kind switch
             {
-                SyntaxKind.PlusToken  => BoundBinaryOperatorKind.Addition,
-                SyntaxKind.MinusToken => BoundBinaryOperatorKind.Substraction,
-                SyntaxKind.StarToken  => BoundBinaryOperatorKind.Multiplication,
-                SyntaxKind.SlashToken => BoundBinaryOperatorKind.Division,
-                _                     => throw new Exception($"Unexpected binary operator {kind}")
+                SyntaxKind.PlusToken  or
+                SyntaxKind.MinusToken                 => leftType == typeof(int) && rightType == typeof(int),
+                SyntaxKind.AmpersandAmpersandToken or
+                SyntaxKind.PipePipeToken              => leftType == typeof(bool) && rightType == typeof(bool),
+                _                                     => throw new Exception($"Unexpected binary operator {kind}")
             };
+ 
+            if (operandTypeOk)
+                return kind switch
+                {
+                    SyntaxKind.PlusToken               => BoundBinaryOperatorKind.Addition,
+                    SyntaxKind.MinusToken              => BoundBinaryOperatorKind.Substraction,
+                    SyntaxKind.StarToken               => BoundBinaryOperatorKind.Multiplication,
+                    SyntaxKind.SlashToken              => BoundBinaryOperatorKind.Division,
+                    SyntaxKind.AmpersandAmpersandToken => BoundBinaryOperatorKind.LogicalAnd,
+                    SyntaxKind.PipePipeToken           => BoundBinaryOperatorKind.LogicalOr,
+                    _ => throw new Exception($"Unexpected binary operator {kind}")
+                };
+            else return null;
         }
     }
 }
